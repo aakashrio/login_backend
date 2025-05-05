@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Register routes
-app.use('/api', userRoutes);  // Make sure to include '/api' or change to your desired base route
+app.use('/auth', userRoutes);  // Make sure to include '/api' or change to your desired base route
 
 app.get('/status', (req, res) => {
   res.json({ status: 'online' });

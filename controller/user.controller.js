@@ -43,19 +43,15 @@ const forgotpassword = async (req, res) => {
       return res.status(404).json({ code: 1, message: 'User not found' });
     }
 
-    const token = jwt.sign(
-      { email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    const resetLink = `http://localhost:5173/reset-password/${token}`;
+    const resetLink = `http://localhost:5173/auth/reset-password/${token}`;
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,   // your email
-        pass: process.env.EMAIL_PASS,   // your app password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
@@ -67,18 +63,18 @@ const forgotpassword = async (req, res) => {
         <p>Click below to reset your password:</p>
         <a href="${resetLink}">${resetLink}</a>
         <p>This link expires in 1 hour.</p>
-      `
+      `,
     };
 
     await transporter.sendMail(mailOptions);
 
     return res.status(200).json({ code: 0, message: 'Reset link sent to your email' });
-
   } catch (error) {
-    console.error('Error sending email', error);
+    console.error('Error sending email:', error);
     return res.status(500).json({ code: 1, message: 'Failed to send email' });
   }
 };
+
 
 const changepassword = async (req, res) => {
   const { token } = req.params;
